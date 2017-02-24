@@ -19,10 +19,8 @@ public class GameLogic implements IGameLogic {
 	
     public Winner gameFinished() {
         //TODO Write your implementation for this method
-        int winner;
-        Winner returnWinner = Winner.NOT_FINISHED;
-
-        winner = state.checkWin();
+        Winner returnWinner;
+        int winner = state.checkWin();
 
         switch (winner) {
             case 0:
