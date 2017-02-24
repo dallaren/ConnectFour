@@ -29,4 +29,28 @@ public class Minimax {
         
         return actions;
     }
+
+    private static int utility(State state) {
+        int winner = state.checkWin();
+        int utility;
+
+        switch (winner) {
+            case 0:
+                utility = 1;
+                break;
+
+            case 1:
+                utility = 2;
+                break;
+
+            case 2:
+                utility = -2;
+                break;
+
+            default:
+                utility = 0;
+                break;
+        }
+        return utility;
+    }
 }
