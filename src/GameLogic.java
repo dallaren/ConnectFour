@@ -3,7 +3,7 @@ public class GameLogic implements IGameLogic {
     private int columns = 0;
     private int rows = 0;
     private int playerID;
-    private int[][] gameBoard;
+    private State state;
     
     public GameLogic() {
         //TODO Write your implementation for this method
@@ -14,7 +14,7 @@ public class GameLogic implements IGameLogic {
         this.rows = rows;
         this.playerID = playerID;
         //TODO Write your implementation for this method
-        gameBoard = new int[columns][rows];
+        state = new State(columns, rows);
     }
 	
     public Winner gameFinished() {
@@ -43,11 +43,12 @@ public class GameLogic implements IGameLogic {
 
     public void insertCoin(int column, int playerID) {
         //TODO Write your implementation for this method
+        state.insertCoin(column,playerID);
     }
 
     public int decideNextMove() {
         //TODO Write your implementation for this method
-        if(gameBoard[5][rows-1] == 0) {
+        if(state.getGameBoard()[5][rows-1] == 0) {
             return 5;
         } else {
             return 0;
@@ -55,6 +56,7 @@ public class GameLogic implements IGameLogic {
     }
 
     private int checkWin() {
+        int[][] gameBoard = state.getGameBoard();
         for (int row = 0; row < rows; row++) { // iterate rows, bottom to top
             for (int column = 0; column < columns; column++) { // iterate columns, left to right
                 int player = gameBoard[column][row];
