@@ -30,6 +30,12 @@ public class Minimax {
         return actions;
     }
 
+    private static State result(State state, int column) {
+        int player = state.isPlayerOne() ? 1 : 2;
+        state.insertCoin(column, player);
+        return state;
+    }
+
     private static int utility(State state) {
         int winner = state.checkWin();
         int utility;
