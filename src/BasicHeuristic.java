@@ -13,8 +13,8 @@ public class BasicHeuristic implements IHeuristic {
         int[][] board = s.getGameBoard();
         int utility = 0;
         int sign = 1;
-        for (int x = 0; x < columns; x--) {
-            for (int y = 0; y < rows; y--) {
+        for (int x = 0; x < columns; x++) {
+            for (int y = 0; y < rows; y++) {
                 int current = board[x][y];
                 if (current == 0) break;
                 if (current == player) {
