@@ -6,37 +6,42 @@ import java.util.ArrayList;
 public class Minimax {
     static int MAX_NUMBER = Integer.MAX_VALUE;
 
-    static int minimaxDecision(State state){
+    public static int minimaxDecision(State state){
         int action = 0;
         int v = -MAX_NUMBER;
         
         for (int a: actions(state)){
             int temp = minValue( result(state, a));
             if(temp > v){
+                v = temp;
                 action = a;
-            }            
+            }
         }
+
         return action;
     }
     
-    static int maxValue(State state){
-        if (state.checkWin()>-1){
-            return utility(state);
+    private static int maxValue(State state){
+        int winner = state.checkWin();
+        if (winner > -1){
+            return utility(state, winner);
         }
         int v = -MAX_NUMBER;
         for (int a: actions(state)){
-            v = Math.max(v, minValue( result(state, a)));           
+            v = Math.max(v, minValue( result(state, a)));
         }
         return v;
     }
     
-    static int minValue(State state){
-        if (state.checkWin()>-1){
-            return utility(state);
+    private static int minValue(State state){
+        int winner = state.checkWin();
+        if (winner > -1){
+            System.out.println("terminal");
+            return utility(state, winner);
         }
         int v = MAX_NUMBER;
         for (int a: actions(state)){
-            v = Math.min(v, maxValue( result(state, a)));           
+            v = Math.min(v, maxValue( result(state, a)));
         }
         return v;
     }
@@ -47,7 +52,7 @@ public class Minimax {
         int[][] gameBoard = state.getGameBoard();
         ArrayList<Integer> actions = new ArrayList<>(columns);
   
-        for (int column = 0; column < column; column++) {
+        for (int column = 0; column < columns; column++) {
             if(gameBoard[column][rows-1] == 0) {
                 actions.add(column);
             }
@@ -58,32 +63,29 @@ public class Minimax {
 
     private static State result(State state, int column) {
       int player = state.isPlayerOne() ? 1 : 2;
-      state.insertCoin(column, player);
-      return state;
+      State resultState = new State(state);
+      resultState.insertCoin(column, player);
+      return resultState;
     }
 
-    private static int utility(State state) {
-        int winner = state.checkWin();
+    private static int utility(State state, int winner) {
         int playerId = state.getPlayerId();
         int utility;
   
         switch (winner) {
-            case 0:
-                utility = 1;
-                break;
-  
             case 1:
-                utility = playerId == 1 ? 2 : -2;
+                utility = playerId == winner ? 2 : -2;
                 break;
   
             case 2:
-                utility = playerId == 2 ? 2 : -2;
+                utility = playerId == winner ? 2 : -2;
                 break;
   
             default:
                 utility = 0;
                 break;
         }
+        //System.out.println(utility);
         return utility;
     }
 }

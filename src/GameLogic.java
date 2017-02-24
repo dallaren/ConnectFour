@@ -14,13 +14,14 @@ public class GameLogic implements IGameLogic {
         this.rows = rows;
         this.playerID = playerID;
         //TODO Write your implementation for this method
-        state = new State(columns, rows);
+        state = new State(columns, rows, playerID);
     }
 	
     public Winner gameFinished() {
         //TODO Write your implementation for this method
         Winner returnWinner;
         int winner = state.checkWin();
+        //System.out.println("Winner: " + winner);
 
         switch (winner) {
             case 0:
@@ -50,11 +51,8 @@ public class GameLogic implements IGameLogic {
 
     public int decideNextMove() {
         //TODO Write your implementation for this method
-        if(state.getGameBoard()[5][rows-1] == 0) {
-            return 5;
-        } else {
-            return 0;
-        }
+        State minimaxState = new State(state);
+        return Minimax.minimaxDecision(minimaxState);
     }
 }
 

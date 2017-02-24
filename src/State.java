@@ -16,6 +16,19 @@ public class State {
         playerOne = true;
     }
 
+    public State(State oldState) {
+        playerOne = oldState.isPlayerOne();
+        columns = oldState.getColumns();
+        rows = oldState.getRows();
+        gameBoard = new int[columns][rows];
+        for (int column = 0; column < columns; column++) {
+            for (int row = 0; row < rows; row++) {
+                gameBoard[column][row] = oldState.getGameBoard()[column][row];
+            }
+        }
+        playerId = oldState.getPlayerId();
+    }
+
     public boolean isPlayerOne() {
         return playerOne;
     }
@@ -50,6 +63,7 @@ public class State {
         for (int row = 0; row < rows; row++) { // iterate rows, bottom to top
             for (int column = 0; column < columns; column++) { // iterate columns, left to right
                 int player = gameBoard[column][row];
+                //System.out.println("Player " + player);
                 if (player == 0) {
                     isTie = false;
                     continue; // don't check empty slots
