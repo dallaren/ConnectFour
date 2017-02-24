@@ -38,6 +38,7 @@ public class Minimax {
 
     private static int utility(State state) {
         int winner = state.checkWin();
+        int playerId = state.getPlayerId();
         int utility;
 
         switch (winner) {
@@ -46,11 +47,11 @@ public class Minimax {
                 break;
 
             case 1:
-                utility = 2;
+                utility = playerId == 1 ? 2 : -2;
                 break;
 
             case 2:
-                utility = -2;
+                utility = playerId == 2 ? 2 : -2;
                 break;
 
             default:
