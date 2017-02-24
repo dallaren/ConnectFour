@@ -9,7 +9,7 @@ public class BasicHeuristic implements IHeuristic {
     public int getUtility(State s) {
         int columns = s.getColumns();
         int rows = s.getRows();
-        int player = s.getPlayerID();
+        int player = s.getPlayerId();
         int[][] board = s.getGameBoard();
         int utility = 0;
         int sign = 1;
