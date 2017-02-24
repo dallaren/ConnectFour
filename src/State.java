@@ -6,16 +6,26 @@ public class State {
     private int columns;
     private int rows;
     private int[][] gameBoard;
+    private int playerId;
 
-    public State(int columns, int rows) {
+    public State(int columns, int rows, int playerId) {
         this.columns = columns;
         this.rows = rows;
+        this.playerId = playerId;
         gameBoard = new int[columns][rows];
         playerOne = true;
     }
 
     public boolean isPlayerOne() {
         return playerOne;
+    }
+
+    public int getPlayer() {
+        return playerOne ? 1 : 2;
+    }
+
+    public int getPlayerId() {
+        return playerId;
     }
 
     public int[][] getGameBoard() {
