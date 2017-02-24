@@ -65,3 +65,4 @@ $RECYCLE.BIN/
 *.xml
 *.iml
 
+.idea/workspace.xml
