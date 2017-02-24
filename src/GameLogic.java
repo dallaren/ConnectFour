@@ -43,7 +43,6 @@ public class GameLogic implements IGameLogic {
 
     public void insertCoin(int column, int playerID) {
         //TODO Write your implementation for this method
-        updateGameBoard(column, playerID);
     }
 
     public int decideNextMove() {
@@ -53,27 +52,6 @@ public class GameLogic implements IGameLogic {
         } else {
             return 0;
         }
-    }
-
-    private void updateGameBoard(int column, int playerID) {
-
-        for (int row = 0; row < rows; row++) {
-            if(gameBoard[column][row] == 0) {
-                gameBoard[column][row] = playerID;
-                break;
-            }
-        }
-        //printGameBoard();
-    }
-
-    private void printGameBoard() {
-        for (int row = rows-1; row >= 0; row--) {
-            for (int column = 0; column < columns; column++) {
-                System.out.print(gameBoard[column][row]);
-            }
-            System.out.println();
-        }
-        System.out.println();
     }
 
     private int checkWin() {
