@@ -62,4 +62,10 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+<<<<<<< HEAD
 .idea/workspace.xml
+=======
+*.xml
+*.iml
+
+>>>>>>> 9587a61a52d9241c81ab4df6a71d7d439984d4e5
