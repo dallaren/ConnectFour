@@ -22,11 +22,11 @@ public class GameLogic implements IGameLogic {
         int winner;
         Winner returnWinner = Winner.NOT_FINISHED;
 
-        winner = checkWin();
+        winner = state.checkWin();
 
         switch (winner) {
             case 0:
-                returnWinner = Winner.NOT_FINISHED;
+                returnWinner = Winner.TIE;
                 break;
 
             case 1:
@@ -35,6 +35,10 @@ public class GameLogic implements IGameLogic {
 
             case 2:
                 returnWinner = Winner.PLAYER2;
+                break;
+
+            default:
+                returnWinner = Winner.NOT_FINISHED;
                 break;
         }
         return returnWinner;
@@ -53,42 +57,6 @@ public class GameLogic implements IGameLogic {
         } else {
             return 0;
         }
-    }
-
-    private int checkWin() {
-        int[][] gameBoard = state.getGameBoard();
-        for (int row = 0; row < rows; row++) { // iterate rows, bottom to top
-            for (int column = 0; column < columns; column++) { // iterate columns, left to right
-                int player = gameBoard[column][row];
-                if (player == 0)
-                    continue; // don't check empty slots
-
-                if (column + 3 < columns &&
-                        player == gameBoard[column+1][row] && // look right
-                        player == gameBoard[column+2][row] &&
-                        player == gameBoard[column+3][row])
-                    return player;
-
-                if (row + 3 < rows) {
-                    if (player == gameBoard[column][row+1] && // look up
-                            player == gameBoard[column][row+2] &&
-                            player == gameBoard[column][row+3])
-                        return player;
-                    if (column + 3 < columns &&
-                            player == gameBoard[column+1][row+1] && // look up & right
-                            player == gameBoard[column+2][row+2] &&
-                            player == gameBoard[column+3][row+3])
-                        return player;
-
-                    if (column - 3 >= 0 &&
-                            player == gameBoard[column-1][row+1] && // look up & left
-                            player == gameBoard[column-2][row+2] &&
-                            player == gameBoard[column-3][row+3])
-                        return player;
-                }
-            }
-        }
-        return 0; //no winner found
     }
 }
 
