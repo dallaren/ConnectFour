@@ -4,7 +4,8 @@ import java.util.ArrayList;
  * Created by Jonas on 24-Feb-17.
  */
 public class Minimax {
-    static int MAX_NUMBER = 10000;
+    static int MAX_NUMBER = Integer.MAX_VALUE;
+
     static int minimaxDecision(State state){
         int action = 0;
         int v = -MAX_NUMBER;
