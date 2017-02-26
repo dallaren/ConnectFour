@@ -53,7 +53,8 @@ public class GameLogic implements IGameLogic {
         //TODO Write your implementation for this method
         State minimaxState = new State(state);
         long startTime = System.nanoTime();
-        int decision = Minimax.minimaxDecision(minimaxState);
+        //int decision = Minimax.minimaxDecision(minimaxState);
+        int decision = MinimaxAB.minimaxDecision(minimaxState);
         long currentTime = System.nanoTime();
         System.out.println("Decision took " + ((currentTime-startTime)/1000000) + " ms");
         return decision;
