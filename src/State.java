@@ -143,9 +143,9 @@ public class State {
         }
 
         count = 0;
-        //check descending diagonal going through the token that was just placed
-        for (int i = Math.max(columnLowerLimit, rowUpperLimit); i < Math.min(columnUpperLimit, rowLowerLimit); i++) {
-            if (gameBoard[lastPlayedColumn+i][lastPlayedRow+i] == player) {
+        //check descending diagonal going through the token that was just placed TODO figure out why the +1 needs to be there
+        for (int i = Math.max(columnLowerLimit, -rowUpperLimit); i < Math.min(columnUpperLimit, -rowLowerLimit)+1; i++) {
+            if (gameBoard[lastPlayedColumn+i][lastPlayedRow-i] == player) {
                 count++;
                 if (count >= 4) return player;
             } else {
