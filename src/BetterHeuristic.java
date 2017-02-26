@@ -10,7 +10,7 @@ public class BetterHeuristic implements IHeuristic {
         int columns = s.getColumns();
         int rows = s.getRows();
         int player = s.getPlayerId();
-        int[][] board = s.getGameBoard();
+        byte[][] board = s.getGameBoard();
         int utility = 0;
         int sign = 1;
         for (int x = 0; x < columns; x++) {

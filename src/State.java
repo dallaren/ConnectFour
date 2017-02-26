@@ -5,14 +5,14 @@ public class State {
     private boolean playerOne;
     private int columns;
     private int rows;
-    private int[][] gameBoard; //TODO make byte[][] instead?
+    private byte[][] gameBoard; //TODO make byte[][] instead?
     private int playerId;
 
     public State(int columns, int rows, int playerId) {
         this.columns = columns;
         this.rows = rows;
         this.playerId = playerId;
-        gameBoard = new int[columns][rows];
+        gameBoard = new byte[columns][rows];
         playerOne = true;
     }
 
@@ -20,7 +20,7 @@ public class State {
         playerOne = oldState.isPlayerOne();
         columns = oldState.getColumns();
         rows = oldState.getRows();
-        gameBoard = new int[columns][rows];
+        gameBoard = new byte[columns][rows];
         for (int column = 0; column < columns; column++) {
             for (int row = 0; row < rows; row++) {
                 gameBoard[column][row] = oldState.getGameBoard()[column][row];
@@ -41,7 +41,7 @@ public class State {
         return playerId;
     }
 
-    public int[][] getGameBoard() {
+    public byte[][] getGameBoard() {
         return gameBoard;
     }
 
@@ -102,7 +102,7 @@ public class State {
 
         for (int row = 0; row < rows; row++) {
             if(gameBoard[column][row] == 0) {
-                gameBoard[column][row] = playerID;
+                gameBoard[column][row] = (byte)playerID;
                 break;
             }
         }

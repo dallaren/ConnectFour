@@ -49,7 +49,7 @@ public class Minimax {
     private static Iterable<Integer> actions(State state) {
         int columns = state.getColumns();
         int rows = state.getRows();
-        int[][] gameBoard = state.getGameBoard();
+        byte[][] gameBoard = state.getGameBoard();
         ArrayList<Integer> actions = new ArrayList<>(columns);
   
         for (int column = 0; column < columns; column++) {
