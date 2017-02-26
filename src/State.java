@@ -5,7 +5,7 @@ public class State {
     private boolean playerOne;
     private int columns;
     private int rows;
-    private int[][] gameBoard;
+    private int[][] gameBoard; //TODO make byte[][] instead?
     private int playerId;
 
     public State(int columns, int rows, int playerId) {
@@ -58,7 +58,7 @@ public class State {
         playerOne = !playerOne;
     }
 
-    public int checkWin() {
+    public int checkWin() { //TODO optimize
         boolean isTie = true;
         for (int row = 0; row < rows; row++) { // iterate rows, bottom to top
             for (int column = 0; column < columns; column++) { // iterate columns, left to right

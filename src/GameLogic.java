@@ -1,19 +1,13 @@
 
 public class GameLogic implements IGameLogic {
-    private int columns = 0;
-    private int rows = 0;
-    private int playerID;
     private State state;
+    private final int MAX_DEPTH = 10;
     
     public GameLogic() {
-        //TODO Write your implementation for this method
+
     }
 	
     public void initializeGame(int columns, int rows, int playerID) {
-        this.columns = columns;
-        this.rows = rows;
-        this.playerID = playerID;
-        //TODO Write your implementation for this method
         state = new State(columns, rows, playerID);
     }
 	
@@ -45,16 +39,15 @@ public class GameLogic implements IGameLogic {
 
 
     public void insertCoin(int column, int playerID) {
-        //TODO Write your implementation for this method
         state.insertCoin(column,playerID);
     }
 
     public int decideNextMove() {
-        //TODO Write your implementation for this method
         State minimaxState = new State(state);
         long startTime = System.nanoTime();
         //int decision = Minimax.minimaxDecision(minimaxState);
-        int decision = MinimaxAB.minimaxDecision(minimaxState);
+        //int decision = MinimaxAB.minimaxDecision(minimaxState);
+        int decision = LimitedDepthAB.minimaxDecision(minimaxState, MAX_DEPTH);
         long currentTime = System.nanoTime();
         System.out.println("Decision took " + ((currentTime-startTime)/1000000) + " ms");
         return decision;
