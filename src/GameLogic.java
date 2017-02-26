@@ -52,7 +52,11 @@ public class GameLogic implements IGameLogic {
     public int decideNextMove() {
         //TODO Write your implementation for this method
         State minimaxState = new State(state);
-        return Minimax.minimaxDecision(minimaxState);
+        long startTime = System.nanoTime();
+        int decision = Minimax.minimaxDecision(minimaxState);
+        long currentTime = System.nanoTime();
+        System.out.println("Decision took " + ((currentTime-startTime)/1000000) + " ms");
+        return decision;
     }
 }
 

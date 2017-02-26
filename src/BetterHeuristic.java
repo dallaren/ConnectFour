@@ -25,7 +25,7 @@ public class BetterHeuristic implements IHeuristic {
                     int inRow = 0;
                     for (int i = y; i >= 0; i--) {
                         if (board[x][i] == current) {
-                            inRow++
+                            inRow++;
                         } else {
                             utility += Math.pow(5, inRow) * sign;
                         }

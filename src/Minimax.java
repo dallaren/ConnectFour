@@ -36,7 +36,7 @@ public class Minimax {
     private static int minValue(State state){
         int winner = state.checkWin();
         if (winner > -1){
-            System.out.println("terminal");
+            //System.out.println("terminal");
             return utility(state, winner);
         }
         int v = MAX_NUMBER;
@@ -62,7 +62,7 @@ public class Minimax {
     }
 
     private static State result(State state, int column) {
-      int player = state.isPlayerOne() ? 1 : 2;
+      int player = state.getPlayer();
       State resultState = new State(state);
       resultState.insertCoin(column, player);
       return resultState;
@@ -71,21 +71,13 @@ public class Minimax {
     private static int utility(State state, int winner) {
         int playerId = state.getPlayerId();
         int utility;
-  
-        switch (winner) {
-            case 1:
-                utility = playerId == winner ? 2 : -2;
-                break;
-  
-            case 2:
-                utility = playerId == winner ? 2 : -2;
-                break;
-  
-            default:
-                utility = 0;
-                break;
+
+        if (winner < 1) {
+            utility = 0;
+        } else {
+            utility = playerId == winner ? 2 : -2;
         }
-        //System.out.println(utility);
+
         return utility;
     }
 }
