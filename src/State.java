@@ -5,8 +5,10 @@ public class State {
     private boolean playerOne;
     private int columns;
     private int rows;
-    private byte[][] gameBoard; //TODO make byte[][] instead?
+    private byte[][] gameBoard;
     private int playerId;
+    private int lastPlayedColumn;
+    private int lastPlayedRow;
 
     public State(int columns, int rows, int playerId) {
         this.columns = columns;
@@ -54,18 +56,17 @@ public class State {
     }
 
     public void insertCoin(int column, int playerId) {
-        updateGameBoard(column, playerId);
+        lastPlayedColumn = column;
+        lastPlayedRow = updateGameBoard(column, playerId);
         playerOne = !playerOne;
     }
 
-    public int checkWin() { //TODO optimize
-        boolean isTie = true;
+    /*public int checkWin() { //TODO optimize
         for (int row = 0; row < rows; row++) { // iterate rows, bottom to top
             for (int column = 0; column < columns; column++) { // iterate columns, left to right
                 int player = gameBoard[column][row];
                 //System.out.println("Player " + player);
                 if (player == 0) {
-                    isTie = false;
                     continue; // don't check empty slots
                 }
 
@@ -94,19 +95,86 @@ public class State {
                 }
             }
         }
-        if(isTie) return 0;
+
+        if(isTie()) return 0;
+        return -1; //no winner found
+    }*/
+
+    //check for a win in all directions except up
+    public int checkWin() {
+        int player = gameBoard[lastPlayedColumn][lastPlayedRow];
+
+        if (lastPlayedRow > 2) {
+            if (player == gameBoard[lastPlayedColumn][lastPlayedRow - 1] && // look down
+                    player == gameBoard[lastPlayedColumn][lastPlayedRow - 2] &&
+                    player == gameBoard[lastPlayedColumn][lastPlayedRow - 3])
+                return player;
+        }
+
+        int columnLowerLimit = lastPlayedColumn > 2 ? -3 : -lastPlayedColumn;
+        int columnUpperLimit = lastPlayedColumn < columns-3 ? 3 : columns- lastPlayedColumn -1;
+        int rowLowerLimit = lastPlayedRow > 2 ? -3 : -lastPlayedRow;
+        int rowUpperLimit = lastPlayedRow < rows-3 ? 3 : rows- lastPlayedRow -1;
+        /*System.out.println(columnLowerLimit);
+        System.out.println(columnUpperLimit);
+        System.out.println(rowLowerLimit);
+        System.out.println(rowUpperLimit);*/
+
+        int count = 0;
+        //check the horizontal line going through the token that was just placed
+        for (int c = columnLowerLimit; c <= columnUpperLimit; c++) {
+            if (gameBoard[lastPlayedColumn+c][lastPlayedRow] == player) {
+                count++;
+                if (count >= 4) return player;
+            } else {
+                count = 0;
+            }
+        }
+
+        count = 0;
+        //check ascending diagonal going through the token that was just placed
+        for (int i = Math.max(columnLowerLimit, rowLowerLimit); i < Math.min(columnUpperLimit, rowUpperLimit); i++) {
+            if (gameBoard[lastPlayedColumn+i][lastPlayedRow+i] == player) {
+                count++;
+                if (count >= 4) return player;
+            } else {
+                count = 0;
+            }
+        }
+
+        count = 0;
+        //check descending diagonal going through the token that was just placed
+        for (int i = Math.max(columnLowerLimit, rowUpperLimit); i < Math.min(columnUpperLimit, rowLowerLimit); i++) {
+            if (gameBoard[lastPlayedColumn+i][lastPlayedRow+i] == player) {
+                count++;
+                if (count >= 4) return player;
+            } else {
+                count = 0;
+            }
+        }
+
+        if(isTie()) return 0;
         return -1; //no winner found
     }
 
-    private void updateGameBoard(int column, int playerID) {
+    private boolean isTie() {
+        for (int column = 0; column < columns; column++) {
+            if (gameBoard[column][rows-1] == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private int updateGameBoard(int column, int playerID) {
 
         for (int row = 0; row < rows; row++) {
             if(gameBoard[column][row] == 0) {
                 gameBoard[column][row] = (byte)playerID;
-                break;
+                return row;
             }
         }
-        //printGameBoard();
+        return -1;
     }
 
     private void printGameBoard() {
