@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by Jonas on 26-Feb-17.
@@ -15,6 +16,8 @@ public class LimitedDepthAB {
         MAX_DEPTH = maxDepth;
         heuristic = new BasicHeuristic();
 
+        System.out.println(actions(state));
+
         for (int a: actions(state)){
             int tempValue = minValue(result(state, a), NEGATIVE_INFINITY, INFINITY, 1);
             if(tempValue > value){
@@ -22,7 +25,6 @@ public class LimitedDepthAB {
                 action = a;
             }
         }
-
         return action;
     }
 
@@ -64,7 +66,6 @@ public class LimitedDepthAB {
         return value;
     }
 
-    //TODO move ordering: winning move -> interrupt winning move -> ???
     private static Iterable<Integer> actions(State state) {
         int columns = state.getColumns();
         int rows = state.getRows();
@@ -76,6 +77,14 @@ public class LimitedDepthAB {
                 actions.add(column);
             }
         }
+
+        Collections.sort(actions, (a1, a2) ->
+            {
+                //sort moves in order of closest to the middle
+                int v1 = Math.abs(a1 - columns/2);
+                int v2 = Math.abs(a2 - columns/2);
+                return Integer.compare(v1,v2);
+            });
 
         return actions;
     }
