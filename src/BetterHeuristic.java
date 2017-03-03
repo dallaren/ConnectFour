@@ -12,7 +12,6 @@ public class BetterHeuristic implements IHeuristic {
         int player = s.getPlayerId();
         byte[][] board = s.getGameBoard();
         int utility = 0;
-        int sign = 1;
         for (int x = 0; x < columns; x++) {
             for (int y = 0; y < rows ; y++) {
                 //find the first empty spot in each column
@@ -22,17 +21,16 @@ public class BetterHeuristic implements IHeuristic {
                 if (y > 0) {
                     down = board[x][y - 1];
                 }
-                for (int i = 0; y-i >= 0 && i <= 3; i++) {
+                for (int i = 1; y-i >= 0 && i <= 3; i++) {
                     if (board[x][y-i] != down) {break;}
                     downInRow++;
                 }
                 if (down!= 0){
-                    sign = (down == player) ? 1 : -1;
+                    int sign = (down == player) ? 1 : -1;
                     utility += (downInRow>=3?sign:0);
                 }
                 //</editor-fold>
                 //<editor-fold desc= "then check left and right if possible">
-                sign = 0;
                 int left = 0, right = 0;
                 int leftInRow = 0, rightInRow = 0;
                 if (x > 0) {
@@ -44,14 +42,14 @@ public class BetterHeuristic implements IHeuristic {
 
                 //check left
                 if (left != 0) {
-                    for (int i = 0; x - i >= 0 && i <= 3; i++) {
+                    for (int i = 1; x - i >= 0 && i <= 3; i++) {
                         if (board[x - i][y] != left) {break;}
                         leftInRow++;
                     }
                 }
                 //check right
                 if (right != 0) {
-                    for (int i = 0; x + i < columns && i <= 3; i++) {
+                    for (int i = 1; x + i < columns && i <= 3; i++) {
                         if (board[x + i][y] != left) {break;}
                         rightInRow++;
                     }
@@ -77,7 +75,7 @@ public class BetterHeuristic implements IHeuristic {
                 int temp;
                 //down left
                 if (leftDown != 0) {
-                    for (int i = 0; x - i >= 0 && y - i >= 0 && i <= 3; i++) {
+                    for (int i = 1; x - i >= 0 && y - i >= 0 && i <= 3; i++) {
                         temp = board[x-i][y-i];
                         if (temp != leftDown) {break;}
                         leftDownInRow++;
@@ -85,7 +83,7 @@ public class BetterHeuristic implements IHeuristic {
                 }
                 //down right
                 if (rightDown != 0) {
-                    for (int i = 0; x + i < columns && y - i >= 0 && i <= 3; i++) {
+                    for (int i = 1; x + i < columns && y - i >= 0 && i <= 3; i++) {
                         temp = board[x+i][y-i];
                         if (temp != rightDown) {break;}
                         rightDownInRow++;
@@ -93,14 +91,14 @@ public class BetterHeuristic implements IHeuristic {
                 }
                 //up left
                 if (leftUp != 0) {
-                    for (int i = 0; x - i >= 0 && y + i < rows && i <= 3; i++) {
+                    for (int i = 1; x - i >= 0 && y + i < rows && i <= 3; i++) {
                         if ( board[x-i][y+i] != leftUp) {break;}
                         leftUpInRow++;
                     }
                 }
                 //up right
                 if (rightUp != 0) {
-                    for (int i = 0; x + i < columns && y + i < rows && i <= 3; i++) {
+                    for (int i = 1; x + i < columns && y + i < rows && i <= 3; i++) {
                         if (board[x+i][y+i] != rightDown) {break;}
                         rightDownInRow++;
                     }
