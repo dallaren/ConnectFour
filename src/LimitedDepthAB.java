@@ -32,7 +32,7 @@ public class LimitedDepthAB {
     private static int maxValue(State state, int alpha, int beta, int depth){
         int winner = state.checkWin();
         if (winner > -1){
-            return utility(state, winner);
+            return utility(state, winner, depth);
         }
         if (depth >= MAX_DEPTH) {
             return heuristic.getUtility(state);
@@ -51,7 +51,7 @@ public class LimitedDepthAB {
     private static int minValue(State state, int alpha, int beta, int depth){
         int winner = state.checkWin();
         if (winner > -1){
-            return utility(state, winner);
+            return utility(state, winner, depth);
         }
         if (depth >= MAX_DEPTH) {
             return heuristic.getUtility(state);
@@ -97,14 +97,14 @@ public class LimitedDepthAB {
         return resultState;
     }
 
-    private static int utility(State state, int winner) {
+    private static int utility(State state, int winner, int depth) {
         int playerId = state.getPlayerId();
         int utility;
 
         if (winner < 1) {
             utility = 0;
         } else {
-            utility = playerId == winner ? 1000 : -1000;
+            utility = playerId == winner ? 1000-depth : -1000+depth;
         }
 
         return utility;
