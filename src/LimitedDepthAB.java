@@ -14,17 +14,18 @@ public class LimitedDepthAB {
         int action = 0;
         int value = NEGATIVE_INFINITY;
         MAX_DEPTH = maxDepth;
-        heuristic = new BasicHeuristic();
-
-        System.out.println(actions(state));
+        heuristic = new BetterHeuristic();
+        //System.out.println(actions(state));
 
         for (int a: actions(state)){
             int tempValue = minValue(result(state, a), NEGATIVE_INFINITY, INFINITY, 1);
+            System.out.print(tempValue + " ");
             if(tempValue > value){
                 value = tempValue;
                 action = a;
             }
         }
+        System.out.println();
         return action;
     }
 

@@ -1,7 +1,7 @@
 
 public class GameLogic implements IGameLogic {
     private State state;
-    private final int MAX_DEPTH = 10;
+    private final int MAX_DEPTH = 11;
     
     public GameLogic() {
 
