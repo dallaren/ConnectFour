@@ -61,68 +61,30 @@ public class State {
         playerOne = !playerOne;
     }
 
-    /*public int checkWin() { //TODO optimize
-        for (int row = 0; row < rows; row++) { // iterate rows, bottom to top
-            for (int column = 0; column < columns; column++) { // iterate columns, left to right
-                int player = gameBoard[column][row];
-                //System.out.println("Player " + player);
-                if (player == 0) {
-                    continue; // don't check empty slots
-                }
-
-                if (column + 3 < columns &&
-                        player == gameBoard[column+1][row] && // look right
-                        player == gameBoard[column+2][row] &&
-                        player == gameBoard[column+3][row])
-                    return player;
-
-                if (row + 3 < rows) {
-                    if (player == gameBoard[column][row+1] && // look up
-                            player == gameBoard[column][row+2] &&
-                            player == gameBoard[column][row+3])
-                        return player;
-                    if (column + 3 < columns &&
-                            player == gameBoard[column+1][row+1] && // look up & right
-                            player == gameBoard[column+2][row+2] &&
-                            player == gameBoard[column+3][row+3])
-                        return player;
-
-                    if (column - 3 >= 0 &&
-                            player == gameBoard[column-1][row+1] && // look up & left
-                            player == gameBoard[column-2][row+2] &&
-                            player == gameBoard[column-3][row+3])
-                        return player;
-                }
-            }
-        }
-
-        if(isTie()) return 0;
-        return -1; //no winner found
-    }*/
-
     //check for a win in all directions except up
+    //returns -1 for not finished, 0 for tie, 1 for player1 win, 2 for player2 win
     public int checkWin() {
         int player = gameBoard[lastPlayedColumn][lastPlayedRow];
 
+        // look down
         if (lastPlayedRow > 2) {
-            if (player == gameBoard[lastPlayedColumn][lastPlayedRow - 1] && // look down
+            if (player == gameBoard[lastPlayedColumn][lastPlayedRow - 1] &&
                     player == gameBoard[lastPlayedColumn][lastPlayedRow - 2] &&
                     player == gameBoard[lastPlayedColumn][lastPlayedRow - 3])
                 return player;
         }
 
-        int columnLowerLimit = lastPlayedColumn > 2 ? -3 : -lastPlayedColumn;
-        int columnUpperLimit = lastPlayedColumn < columns-3 ? 3 : columns- lastPlayedColumn -1;
-        int rowLowerLimit = lastPlayedRow > 2 ? -3 : -lastPlayedRow;
-        int rowUpperLimit = lastPlayedRow < rows-3 ? 3 : rows- lastPlayedRow -1;
-        /*System.out.println(columnLowerLimit);
-        System.out.println(columnUpperLimit);
-        System.out.println(rowLowerLimit);
-        System.out.println(rowUpperLimit);*/
+        //limits for how many spots we can go left/right/down/up
+        //from the current token before hitting the edge of the board.
+        //we're only interested in looking at most 3 spots in either direction (because it's connect 4)
+        int leftLimit = lastPlayedColumn > 2 ? -3 : -lastPlayedColumn; //how far can we go to the left
+        int rightLimit = lastPlayedColumn < columns-3 ? 3 : (columns-1) - lastPlayedColumn; //how far can we go to the right
+        int downLimit = lastPlayedRow > 2 ? -3 : -lastPlayedRow; //how far can we go down
+        int upLimit = lastPlayedRow < rows-3 ? 3 : (rows-1) - lastPlayedRow; //how far can we go up
 
         int count = 0;
-        //check the horizontal line going through the token that was just placed
-        for (int c = columnLowerLimit; c <= columnUpperLimit; c++) {
+        //check the horizontal line going through the token that was just placed, going left to right
+        for (int c = leftLimit; c <= rightLimit; c++) {
             if (gameBoard[lastPlayedColumn+c][lastPlayedRow] == player) {
                 count++;
                 if (count >= 4) return player;
@@ -133,7 +95,7 @@ public class State {
 
         count = 0;
         //check ascending diagonal going through the token that was just placed
-        for (int i = Math.max(columnLowerLimit, rowLowerLimit); i < Math.min(columnUpperLimit, rowUpperLimit); i++) {
+        for (int i = Math.max(leftLimit, downLimit); i < Math.min(rightLimit, upLimit); i++) {
             if (gameBoard[lastPlayedColumn+i][lastPlayedRow+i] == player) {
                 count++;
                 if (count >= 4) return player;
@@ -143,8 +105,8 @@ public class State {
         }
 
         count = 0;
-        //check descending diagonal going through the token that was just placed TODO figure out why the +1 needs to be there
-        for (int i = Math.max(columnLowerLimit, -rowUpperLimit); i < Math.min(columnUpperLimit, -rowLowerLimit)+1; i++) {
+        //check descending diagonal going through the token that was just placed
+        for (int i = Math.max(leftLimit, -upLimit); i < Math.min(rightLimit, -downLimit)+1; i++) {
             if (gameBoard[lastPlayedColumn+i][lastPlayedRow-i] == player) {
                 count++;
                 if (count >= 4) return player;
@@ -157,6 +119,7 @@ public class State {
         return -1; //no winner found
     }
 
+    //there is a tie if the top row is full and no player has won
     private boolean isTie() {
         for (int column = 0; column < columns; column++) {
             if (gameBoard[column][rows-1] == 0) {
@@ -167,7 +130,6 @@ public class State {
     }
 
     private int updateGameBoard(int column, int playerID) {
-
         for (int row = 0; row < rows; row++) {
             if(gameBoard[column][row] == 0) {
                 gameBoard[column][row] = (byte)playerID;
