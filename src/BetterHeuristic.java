@@ -56,7 +56,6 @@ public class BetterHeuristic implements IHeuristic {
                             leftInRow++;
                         }
                     }
-                    if
                     //check right
                     if (right != 0) {
                         for (int i = 1; x + i < columns && i <= 3; i++) {
