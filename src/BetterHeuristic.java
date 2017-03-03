@@ -17,24 +17,24 @@ public class BetterHeuristic implements IHeuristic {
             for (int y = 0; y < rows ; y++) {
                 //find the first empty spot in each column
                 if (board[x][y] != 0) continue;
-                //if not on the bottom layer
                 //<editor-fold desc = "first check downwards if possible">
+                int down = 0, downInRow = 0;
                 if (y > 0) {
-                    int current = board[x][y - 1];
-                    sign = (current == player)?1:(current == 0)?0:-1;
-                    int inRow = 0;
-                    for (int i = y; i >= 0; i--) {
-                        if (board[x][i] == current) {
-                            inRow++;
-                        } else {
-                            utility += Math.pow(5, inRow) * sign;
-                        }
-                    }
+                    down = board[x][y - 1];
+                }
+                for (int i = 0; y-i >= 0; i++) {
+                    if (board[x][y-i] != down) {break;}
+                    downInRow++;
+                }
+                if (down!= 0){
+                    sign = (down == player) ? 1 : -1;
+                    utility += (downInRow>=3?sign:0);
                 }
                 //</editor-fold>
                 //<editor-fold desc= "then check left and right if possible">
                 sign = 0;
                 int left = 0, right = 0;
+                int leftInRow = 0, rightInRow = 0;
                 if (x > 0) {
                     //first check downwards
                     left = board[x-1][y];}
@@ -42,88 +42,88 @@ public class BetterHeuristic implements IHeuristic {
                     //first check downwards
                     right = board[x+1][y];}
 
-                //the case where on both sides are the same
-                if (left != 0 && left == right) {
-                    int current = left;
-                    sign = (current == player) ? 1 : (current == 0) ? 0 : -1;
-                    int inRow = 0;
-                    int temp;
-                    for (int i = x - 1; i >= 0 && i >= x - 3; i--) {
-                        temp = board[i][y];
-                        if (temp != current) {
-                            //check if there is empty space on the other side of three
-                            //if (i == x-4 && temp == 0){inRow++;}
-                            //is commented out since it will be counted twice anyhow
-                            break;
-                        }
-                        inRow++;
+                //check left
+                if (left != 0) {
+                    for (int i = 0; x - i >= 0 && i <= 3; i++) {
+                        if (board[x - i][y] != left) {break;}
+                        leftInRow++;
                     }
-                    for (int i = x + 1; i <= columns - 1 && i <= x + 3; i++) {
-                        temp = board[i][y];
-                        if (temp != current) {
-                            //check if there is empty space on the other side of three
-                            //if (i == x+4 && temp == 0){inRow++;}
-                            //is commented out since it will be counted twice anyhow
-                            break;
-                        }
-                        inRow++;
-                    }
-                    utility += Math.pow(5, inRow) * sign;
                 }
-                //the case where both sides aren't the same
-                else{
-                    if (left != 0) {
-                        sign = (left == player) ? 1 : -1;
-                        int inRow = 0;
-                        int temp;
-                        for (int i = x - 1; i >= 0 && i >= x - 3; i--) {
-                            temp = board[i][y];
-                            if (temp != left) {
-                                //check if there is empty space on the other side of three
-                                //if (i == x-4 && temp == 0){inRow++;}
-                                //is commented out since it will be counted twice anyhow
-                                break;
-                            }
-                            inRow++;
-                        }
-                        utility += Math.pow(5, inRow) * sign;
+                //check right
+                if (right != 0) {
+                    for (int i = 0; x + i < columns && i <= 3; i++) {
+                        if (board[x + i][y] != left) {break;}
+                        rightInRow++;
                     }
-                    if (right != 0) {
-                        sign = (right == player) ? 1 : -1;
-                        int inRow = 0;
-                        int temp;
-                        for (int i = x + 1; i <= columns && i <= x + 3; i++) {
-                            temp = board[i][y];
-                            if (temp != right) {
-                                //check if there is empty space on the other side of three
-                                //if (i == x-4 && temp == 0){inRow++;}
-                                //is commented out since it will be counted twice anyhow
-                                break;
-                            }
-                            inRow++;
-                        }
-                        utility += Math.pow(5, inRow) * sign;
-                    }
+                }
+                utility += somethingInRow(left,right,leftInRow,rightInRow,player);
 
-                }
                 //</editor-fold>
                 //<editor-fold desc = "then check diagonally">
-                int leftup = 0, rightup = 0,leftdown = 0, rightdown = 0;
+                int leftUp = 0, rightUp = 0,leftDown = 0, rightDown = 0;
                 int leftUpInRow = 0, rightUpInRow = 0,leftDownInRow = 0, rightDownInRow = 0;
                 if (x > 0 && y > 0) {
                     //first check downwards
-                    leftdown = board[x-1][y-1];}
+                    leftDown = board[x-1][y-1];}
                 if (x < columns-1 && y > 0) {
                     //first check downwards
-                    rightdown = board[x+1][y];}
+                    rightDown = board[x+1][y];}
                 if (x > 0 && y < rows-1) {
                     //first check downwards
-                    leftup = board[x-1][y-1];}
+                    leftUp = board[x-1][y-1];}
                 if (x < columns-1 && y < rows-1) {
                     //first check downwards
-                    rightup = board[x+1][y];}
+                    rightUp = board[x+1][y];}
+                int temp;
+                //down left
+                if (leftDown != 0) {
+                    for (int i = 0; x - i >= 0 && y - i >= 0 && i <= 3; i++) {
+                        temp = board[x-i][y-i];
+                        if (temp != leftDown) {break;}
+                        leftDownInRow++;
+                    }
+                }
+                //down right
+                if (rightDown != 0) {
+                    for (int i = 0; x + i < columns && y - i >= 0 && i <= 3; i++) {
+                        temp = board[x+i][y-i];
+                        if (temp != rightDown) {break;}
+                        rightDownInRow++;
+                    }
+                }
+                //up left
+                if (leftUp != 0) {
+                    for (int i = 0; x - i >= 0 && y + i < rows && i <= 3; i++) {
+                        if ( board[x-i][y+i] != leftUp) {break;}
+                        leftUpInRow++;
+                    }
+                }
+                //up right
+                if (rightUp != 0) {
+                    for (int i = 0; x + i < columns && y + i < rows && i <= 3; i++) {
+                        if (board[x+i][y+i] != rightDown) {break;}
+                        rightDownInRow++;
+                    }
+                }
+                //utility
+                utility += somethingInRow(leftUp,rightDown,leftUpInRow,rightDownInRow,player);
+                utility += somethingInRow(leftDown,rightUp,leftDownInRow,rightUpInRow,player);
                 //</editor-fold>
             }
+        }
+        return utility;
+    }
+    private int somethingInRow(int a, int b, int aInRow, int bInRow, int player){
+        int sign = 0;
+        int utility = 0;
+        if (a != 0 && a == b) {
+            sign = (a == player) ? 1 : -1;
+            utility += (aInRow + bInRow >= 3) ? sign : 0;
+        } else {
+            sign = (a == player) ? 1 : -1;
+            utility += (aInRow >= 3) ? sign : 0;
+            sign = (b == player) ? 1 : -1;
+            utility += (bInRow >= 3) ? sign : 0;
         }
         return utility;
     }
