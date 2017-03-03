@@ -7,6 +7,7 @@ public class BetterHeuristic implements IHeuristic {
      * currently only checks for connections downwards
      */
     private static boolean iWin = false, uWin = false;
+    private static boolean iPair = false, uPair = false;
     public int getUtility(State s) {
         int columns = s.getColumns();
         int rows = s.getRows();
@@ -15,8 +16,8 @@ public class BetterHeuristic implements IHeuristic {
         int utility = 0;
         for (int x = 0; x < columns; x++) {
             for (int y = 0; y < rows ; y++) {
-                iWin = false;
-                uWin = false;
+                iWin = false; uWin = false;
+                iPair = false; uPair = false;
                 //find the first empty spot in each column
                 if (board[x][y] != 0) continue;
                 //<editor-fold desc = "first check downwards if possible">
@@ -132,15 +133,20 @@ public class BetterHeuristic implements IHeuristic {
                     somethingInRow(leftDown, rightUp, leftDownInRow, rightUpInRow, player);
                 }
                 //</editor-fold>
-                if (iWin) utility++;
-                if (uWin) utility--;
+                if (iWin) utility += 10;
+                if (uWin) utility -= 10;
+                if (iPair) utility += 1;
+                if (uPair) utility -= 1;
             }
         }
         return utility;
     }
 
     private void whoWins(int sign) {
-        if(sign==1){iWin = true;} else {uWin = true;}
+        if(sign==1){iWin =true;} else {uWin = true;}
+    }
+    private void whoHasPair(int sign) {
+        if(sign==1){iPair =true;} else {uPair = true;}
     }
     private boolean bothWon(){
         return (iWin == true && uWin == true);
@@ -150,14 +156,17 @@ public class BetterHeuristic implements IHeuristic {
         int sign;
         if (a != 0 && a == b) {
             sign = (a == player) ? 1 : -1;
-            if (aInRow + bInRow >= 3) whoWins(sign);
+            if (aInRow + bInRow >= 3) {whoWins(sign);}
+            else if (aInRow + bInRow >= 2) {whoHasPair(sign);}
             //utility += (aInRow + bInRow >= 3) ? sign : 0;
         } else {
             sign = (a == player) ? 1 : -1;
-            if (aInRow >= 3) whoWins(sign);
+            if (aInRow >= 3) {whoWins(sign);}
+            else if (aInRow >= 2) {whoHasPair(sign);}
             //utility += (aInRow >= 3) ? sign : 0;
             sign = (b == player) ? 1 : -1;
-            if (bInRow >= 3) whoWins(sign);
+            if (bInRow >= 3) {whoWins(sign);}
+            else if (bInRow >= 2) {whoHasPair(sign);}
             //utility += (bInRow >= 3) ? sign : 0;
         }
     }
