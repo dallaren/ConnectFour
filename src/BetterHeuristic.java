@@ -22,7 +22,7 @@ public class BetterHeuristic implements IHeuristic {
                 if (y > 0) {
                     down = board[x][y - 1];
                 }
-                for (int i = 0; y-i >= 0; i++) {
+                for (int i = 0; y-i >= 0 && i <= 3; i++) {
                     if (board[x][y-i] != down) {break;}
                     downInRow++;
                 }
@@ -67,13 +67,13 @@ public class BetterHeuristic implements IHeuristic {
                     leftDown = board[x-1][y-1];}
                 if (x < columns-1 && y > 0) {
                     //first check downwards
-                    rightDown = board[x+1][y];}
+                    rightDown = board[x+1][y-1];}
                 if (x > 0 && y < rows-1) {
                     //first check downwards
-                    leftUp = board[x-1][y-1];}
+                    leftUp = board[x-1][y+1];}
                 if (x < columns-1 && y < rows-1) {
                     //first check downwards
-                    rightUp = board[x+1][y];}
+                    rightUp = board[x+1][y+1];}
                 int temp;
                 //down left
                 if (leftDown != 0) {
