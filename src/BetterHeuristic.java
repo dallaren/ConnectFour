@@ -133,10 +133,8 @@ public class BetterHeuristic implements IHeuristic {
                     somethingInRow(leftDown, rightUp, leftDownInRow, rightUpInRow, player);
                 }
                 //</editor-fold>
-                if (iWin) utility += 10;
-                if (uWin) utility -= 10;
-                if (iPair) utility += 1;
-                if (uPair) utility -= 1;
+                if (iWin) {utility += 10;} else if (iPair) {utility += 1;}
+                if (uWin) {utility -= 10;} else if (uPair) {utility -= 1;}
             }
         }
         return utility;
