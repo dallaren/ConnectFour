@@ -95,6 +95,7 @@ public class BestHeuristic implements IHeuristic {
                         rightUp = board[x + dx][y + dy];
                     }
                     rightUpStat = getRowScore(columns, rows, board, x, y, dx, dy, rightUp);
+
                     //utility
                     checkForPoints(leftUp, rightDown, leftUpStat, rightDownStat, player);
                     checkForPoints(leftDown, rightUp, leftDownStat, rightUpStat, player);
@@ -109,7 +110,6 @@ public class BestHeuristic implements IHeuristic {
 
     private RowScore getRowScore(int columns, int rows, byte[][] board, int x, int y, int dx, int dy, int current) {
         int inRow = 0;
-        int potentialInRow = 1;
         if (current != 0){
             int i, ix, iy;
             for (i = 1; i <= 3; i++) {
@@ -120,10 +120,10 @@ public class BestHeuristic implements IHeuristic {
                         break;
                     }
                     inRow++;
-                }
+                } else break;
             }
             //check if there are enough spaces here to actually win
-            potentialInRow += inRow;
+            int potentialInRow = inRow + 1;
             for (; potentialInRow < 4; i++) {
                 ix = x + dx * i;
                 iy = y + dy * i;
@@ -132,7 +132,7 @@ public class BestHeuristic implements IHeuristic {
                         break;
                     }
                     potentialInRow++;
-                }
+                } else break;
             }
             return new RowScore(inRow,potentialInRow);
         }
@@ -146,7 +146,7 @@ public class BestHeuristic implements IHeuristic {
         if(sign==1){iPair =true;} else {uPair = true;}
     }
     private boolean bothWon(){
-        return (iWin == true && uWin == true);
+        return (iWin && uWin);
     }
 
     private int oppositePlayer(int player){
