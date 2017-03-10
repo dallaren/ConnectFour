@@ -12,10 +12,8 @@ public class GameLogic implements IGameLogic {
     }
 	
     public Winner gameFinished() {
-        //TODO Write your implementation for this method
         Winner returnWinner;
         int winner = state.checkWin();
-        //System.out.println("Winner: " + winner);
 
         switch (winner) {
             case 0:
@@ -37,7 +35,6 @@ public class GameLogic implements IGameLogic {
         return returnWinner;
     }
 
-
     public void insertCoin(int column, int playerID) {
         state.insertCoin(column,playerID);
     }
@@ -45,8 +42,6 @@ public class GameLogic implements IGameLogic {
     public int decideNextMove() {
         State minimaxState = new State(state);
         long startTime = System.nanoTime();
-        //int decision = Minimax.minimaxDecision(minimaxState);
-        //int decision = MinimaxAB.minimaxDecision(minimaxState);
         int decision = LimitedDepthAB.minimaxDecision(minimaxState, MAX_DEPTH);
         long currentTime = System.nanoTime();
         System.out.println("Decision took " + ((currentTime-startTime)/1000000) + " ms");

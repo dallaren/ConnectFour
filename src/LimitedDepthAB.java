@@ -16,16 +16,13 @@ public class LimitedDepthAB {
         MAX_DEPTH = maxDepth;
         heuristic = new BestHeuristic();
 
-
         for (int a: actions(state)){
             int tempValue = minValue(result(state, a), NEGATIVE_INFINITY, INFINITY, 1);
-            System.out.print(tempValue + " ");
             if(tempValue > value){
                 value = tempValue;
                 action = a;
             }
         }
-        System.out.println();
         return action;
     }
 
@@ -67,21 +64,23 @@ public class LimitedDepthAB {
         return value;
     }
 
+    //return a set of legal actions
     private static Iterable<Integer> actions(State state) {
         int columns = state.getColumns();
         int rows = state.getRows();
         byte[][] gameBoard = state.getGameBoard();
         ArrayList<Integer> actions = new ArrayList<>(columns);
 
+        //each column with an empty slot in the top row is a legal action
         for (int column = 0; column < columns; column++) {
             if(gameBoard[column][rows-1] == 0) {
                 actions.add(column);
             }
         }
 
+        //sort moves in order of closest to the middle
         Collections.sort(actions, (a1, a2) ->
             {
-                //sort moves in order of closest to the middle
                 int v1 = Math.abs(a1 - columns/2);
                 int v2 = Math.abs(a2 - columns/2);
                 return Integer.compare(v1,v2);
@@ -90,6 +89,7 @@ public class LimitedDepthAB {
         return actions;
     }
 
+    //return a new state object where a token has been played into the given column of the given state
     private static State result(State state, int column) {
         int player = state.getPlayer();
         State resultState = new State(state);
@@ -104,6 +104,7 @@ public class LimitedDepthAB {
         if (winner < 1) {
             utility = 0;
         } else {
+            //a win in earlier fewer turns or a loss in more turns will yield a higher utility
             utility = playerId == winner ? 1000-depth : -1000+depth;
         }
 

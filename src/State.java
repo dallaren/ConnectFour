@@ -129,7 +129,6 @@ public class State {
     }
 
     private int updateGameBoard(int column, int playerID) {
-
         for (int row = 0; row < rows; row++) {
             if(gameBoard[column][row] == 0) {
                 gameBoard[column][row] = (byte)playerID;
@@ -137,15 +136,5 @@ public class State {
             }
         }
         return -1;
-    }
-
-    private void printGameBoard() {
-        for (int row = rows-1; row >= 0; row--) {
-            for (int column = 0; column < columns; column++) {
-                System.out.print(gameBoard[column][row]);
-            }
-            System.out.println();
-        }
-        System.out.println();
     }
 }
