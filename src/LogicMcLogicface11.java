@@ -1,7 +1,7 @@
 
 public class LogicMcLogicface11 implements IGameLogic {
     private State state;
-    private final int MAX_DEPTH = 11;
+    private final int MAX_DEPTH = 12;
     private LimitedDepthAB minimax;
     
     public LogicMcLogicface11() {
