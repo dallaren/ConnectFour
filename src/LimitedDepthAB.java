@@ -15,12 +15,12 @@ public class LimitedDepthAB {
         int value = NEGATIVE_INFINITY;
         MAX_DEPTH = maxDepth;
         heuristic = new BetterHeuristic();
+        //System.out.println(actions(state));
 
         for (int a: actions(state)){
             int tempValue = minValue(result(state, a), NEGATIVE_INFINITY, INFINITY, 1);
             System.out.print(tempValue + " ");
             if(tempValue > value){
-                //this move is better than the previous best move
                 value = tempValue;
                 action = a;
             }
@@ -104,7 +104,6 @@ public class LimitedDepthAB {
         if (winner < 1) {
             utility = 0;
         } else {
-            //prioritize wins in fewer moves and losses in more moves
             utility = playerId == winner ? 1000-depth : -1000+depth;
         }
 
