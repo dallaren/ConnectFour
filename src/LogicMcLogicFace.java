@@ -1,9 +1,9 @@
-public class LogicMcLogicface implements IGameLogic {
+public class LogicMcLogicFace implements IGameLogic {
     private State state;
     private final int MAX_DEPTH = 11;
     private LimitedDepthAB minimax;
     
-    public LogicMcLogicface() {
+    public LogicMcLogicFace() {
         minimax = new LimitedDepthAB(new BestHeuristic(), MAX_DEPTH);
     }
 	

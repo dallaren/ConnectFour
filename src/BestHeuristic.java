@@ -111,20 +111,28 @@ public class BestHeuristic implements IHeuristic {
         int inRow = 0;
         int potentialInRow = 1;
         if (current != 0){
-            int i;
-            for (i = 1; (dx == 0 || (x + dx * i >= 0 && x + dx * i < columns)) && (dy == 0 || (y + dy * i >= 0 && y + dy * i < rows)) && i <= 3; i++) {
-                if (board[x + dx * i][y + dy * i] != current) {
-                    break;
+            int i, ix, iy;
+            for (i = 1; i <= 3; i++) {
+                ix = x + dx * i;
+                iy = y + dy * i;
+                if ((dx == 0 || (ix >= 0 && ix < columns)) && (dy == 0 || (iy >= 0 && iy < rows))) {
+                    if (board[ix][iy] != current) {
+                        break;
+                    }
+                    inRow++;
                 }
-                inRow++;
             }
             //check if there are enough spaces here to actually win
             potentialInRow += inRow;
-            for (; (dx == 0 || (x + dx * i >= 0 && x + dx * i < columns)) && (dy == 0 || (y + dy * i >= 0 && y + dy * i < rows)) && potentialInRow < 4; i++) {
-                if (board[x + dx * i][y + dy * i] == oppositePlayer(current)) {
-                    break;
+            for (; potentialInRow < 4; i++) {
+                ix = x + dx * i;
+                iy = y + dy * i;
+                if ((dx == 0 || (ix >= 0 && ix < columns)) && (dy == 0 || (iy >= 0 && iy < rows))) {
+                    if (board[ix][iy] == oppositePlayer(current)) {
+                        break;
+                    }
+                    potentialInRow++;
                 }
-                potentialInRow++;
             }
             return new RowScore(inRow,potentialInRow);
         }
