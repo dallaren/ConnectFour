@@ -26,14 +26,12 @@ public class BestHeuristic implements IHeuristic {
 
                 //<editor-fold desc = "first check downwards if possible">
                 {
-                    int down = 0;
+                    int down;
                     RowScore downStat;
+
                     dx = 0;
                     dy = -1;
-
-                    if (y > 0) {
-                        down = board[x + dx][y + dy];
-                    }
+                    down = (y > 0)?board[x + dx][y + dy]:0;
                     downStat = getRowScore(columns, rows, board, x, y, dx, dy, down);
 
                     checkForPoints(down, 0, downStat, new RowScore(), player);
@@ -41,23 +39,19 @@ public class BestHeuristic implements IHeuristic {
                 //</editor-fold>
                 //<editor-fold desc= "then check left and right if possible">
                 if (!bothWon()) {
-                    int left = 0, right = 0;
+                    int left, right;
                     RowScore leftStat, rightStat;
 
                     //check left
                     dx = -1;
                     dy = 0;
-                    if (x > 0) {
-                        left = board[x + dx][y + dy];
-                    }
+                    left = (x>0)?board[x + dx][y + dy]:0;
                     leftStat = getRowScore(columns, rows, board, x, y, dx, dy, left);
 
                     //check right
                     dx = 1;
                     dy = 0;
-                    if (x < columns - 1) {
-                        right = board[x + dx][y + dy];
-                    }
+                    right = (x < columns - 1)?board[x + dx][y + dy]:0;
                     rightStat = getRowScore(columns, rows, board, x, y, dx, dy, right);
 
                     checkForPoints(left, right, leftStat, rightStat, player);
@@ -65,35 +59,31 @@ public class BestHeuristic implements IHeuristic {
                 //</editor-fold>
                 //<editor-fold desc = "then check diagonally">
                 if(!bothWon()) {
-                    int leftUp = 0, rightUp = 0, leftDown = 0, rightDown = 0;
+                    int leftUp, rightUp, leftDown, rightDown;
                     RowScore rightUpStat, rightDownStat, leftUpStat, leftDownStat;
+
                     //down left
                     dx = -1;
                     dy = -1;
-                    if (x > 0 && y > 0) {
-                        leftDown = board[x + dx][y + dy];
-                    }
+                    leftDown = (x > 0 && y > 0)?board[x + dx][y + dy]:0;
                     leftDownStat = getRowScore(columns, rows, board, x, y, dx, dy, leftDown);
+
                     //down right
                     dx = 1;
                     dy = -1;
-                    if (x < columns - 1 && y > 0) {
-                        rightDown = board[x + dx][y + dy];
-                    }
+                    rightDown = (x < columns - 1 && y > 0)?board[x + dx][y + dy]:0;
                     rightDownStat = getRowScore(columns, rows, board, x, y, dx, dy, rightDown);
+
                     //up left
                     dx = -1;
                     dy = 1;
-                    if (x > 0 && y < rows - 1) {
-                        leftUp = board[x + dx][y + dy];
-                    }
+                    leftUp = (x > 0 && y < rows - 1)?board[x + dx][y + dy]:0;
                     leftUpStat = getRowScore(columns, rows, board, x, y, dx, dy, leftUp);
+
                     //up right
                     dx = 1;
                     dy = 1;
-                    if (x < columns - 1 && y < rows - 1) {
-                        rightUp = board[x + dx][y + dy];
-                    }
+                    rightUp = (x < columns - 1 && y < rows - 1)?board[x + dx][y + dy]:0;
                     rightUpStat = getRowScore(columns, rows, board, x, y, dx, dy, rightUp);
 
                     //utility
