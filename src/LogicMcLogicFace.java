@@ -1,9 +1,9 @@
 
-public class GameLogic implements IGameLogic {
+public class LogicMcLogicFace implements IGameLogic {
     private State state;
     private final int MAX_DEPTH = 11;
     
-    public GameLogic() {
+    public LogicMcLogicFace() {
 
     }
 	
@@ -42,6 +42,7 @@ public class GameLogic implements IGameLogic {
     public int decideNextMove() {
         State minimaxState = new State(state);
         long startTime = System.nanoTime();
+        System.out.println("Thinking...");
         int decision = LimitedDepthAB.minimaxDecision(minimaxState, MAX_DEPTH);
         long currentTime = System.nanoTime();
         System.out.println("Decision took " + ((currentTime-startTime)/1000000) + " ms");
