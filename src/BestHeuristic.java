@@ -1,7 +1,7 @@
 /**
  * Created by mikke on 24-Feb-17.
  */
-public class BetterHeuristic implements IHeuristic {
+public class BestHeuristic implements IHeuristic {
 
     /**
      * currently only checks for connections downwards
@@ -32,10 +32,17 @@ public class BetterHeuristic implements IHeuristic {
                     downInRow++;
                 }
                 if (down!= 0){
+                    int potentialInRow = 1;
+                    //check if there are enough spaces here to actually win
+                    potentialInRow += downInRow;
+                    int i;
+                    for (i = 1; y+i < rows && potentialInRow < 4; i++) {
+                        if (board[x][y+i] == oppositePlayer(down)) {break;}
+                        potentialInRow++;
+                    }
                     int sign = (down == player) ? 1 : -1;
                     //utility += (downInRow>=3?sign:0);
-                    whoWins(sign);
-
+                    if (potentialInRow >=4) {whoWins(sign);}
                 }
                 //</editor-fold>
                 //<editor-fold desc= "then check left and right if possible">
@@ -50,31 +57,49 @@ public class BetterHeuristic implements IHeuristic {
                         //first check downwards
                         right = board[x + 1][y];
                     }
+                    int potentialLeftInRow = 1;
+                    int potentialRightInRow = 1;
                     //check left
                     if (left != 0) {
-                        for (int i = 1; x - i >= 0 && i <= 3; i++) {
+                        int i;
+                        for (i = 1; x - i >= 0 && i <= 3; i++) {
                             if (board[x - i][y] != left) {
                                 break;
                             }
                             leftInRow++;
                         }
+                        //check how many in a row there potentially could be
+                        potentialLeftInRow += leftInRow;
+                        for (; x - i >= 0 && potentialLeftInRow < 4; i++) {
+                            if (board[x - i][y] == oppositePlayer(down)) {break;}
+                            potentialLeftInRow++;
+                        }
                     }
                     //check right
                     if (right != 0) {
-                        for (int i = 1; x + i < columns && i <= 3; i++) {
+                        int i;
+                        for (i = 1; x + i < columns && i <= 3; i++) {
                             if (board[x + i][y] != left) {
                                 break;
                             }
                             rightInRow++;
                         }
+                        //check how many in a row there potentially could be
+                        potentialRightInRow += rightInRow;
+                        for (; x + i < columns && potentialRightInRow < 4; i++) {
+                            if (board[x + i][y] == oppositePlayer(down)) {break;}
+                            potentialRightInRow++;
+                        }
                     }
-                    somethingInRow(left, right, leftInRow, rightInRow, player);
+                    somethingInRow(left, right, leftInRow, rightInRow, potentialLeftInRow, potentialRightInRow, player);
                 }
                 //</editor-fold>
                 //<editor-fold desc = "then check diagonally">
                 if(!bothWon()) {
                     int leftUp = 0, rightUp = 0, leftDown = 0, rightDown = 0;
                     int leftUpInRow = 0, rightUpInRow = 0, leftDownInRow = 0, rightDownInRow = 0;
+                    int potentialLeftUpInRow = 1, potentialRightUpInRow = 1;
+                    int potentialLeftDownInRow = 1, potentialRightDownInRow = 1;
                     if (x > 0 && y > 0) {
                         //first check downwards
                         leftDown = board[x - 1][y - 1];
@@ -94,45 +119,69 @@ public class BetterHeuristic implements IHeuristic {
                     int temp;
                     //down left
                     if (leftDown != 0) {
-                        for (int i = 1; x - i >= 0 && y - i >= 0 && i <= 3; i++) {
+                        int i;
+                        for (i = 1; x - i >= 0 && y - i >= 0 && i <= 3; i++) {
                             temp = board[x - i][y - i];
                             if (temp != leftDown) {
                                 break;
                             }
                             leftDownInRow++;
                         }
+                        potentialLeftDownInRow += leftDownInRow;
+                        for (; x - i >= 0 && y - i >= 0 && potentialLeftDownInRow < 4; i++) {
+                            if (board[x - i][y- i] == oppositePlayer(down)) {break;}
+                            potentialLeftDownInRow++;
+                        }
                     }
                     //down right
                     if (rightDown != 0) {
-                        for (int i = 1; x + i < columns && y - i >= 0 && i <= 3; i++) {
+                        int i;
+                        for (i = 1; x + i < columns && y - i >= 0 && i <= 3; i++) {
                             temp = board[x + i][y - i];
                             if (temp != rightDown) {
                                 break;
                             }
                             rightDownInRow++;
                         }
+                        potentialRightDownInRow += rightDownInRow;
+                        for (; x + i < columns && y - i >= 0 && potentialRightDownInRow < 4; i++) {
+                            if (board[x + i][y - i] == oppositePlayer(down)) {break;}
+                            potentialRightDownInRow++;
+                        }
                     }
                     //up left
                     if (leftUp != 0) {
-                        for (int i = 1; x - i >= 0 && y + i < rows && i <= 3; i++) {
+                        int i;
+                        for (i = 1; x - i >= 0 && y + i < rows && i <= 3; i++) {
                             if (board[x - i][y + i] != leftUp) {
                                 break;
                             }
                             leftUpInRow++;
                         }
+                        potentialLeftUpInRow += leftUpInRow;
+                        for (; x - i >= 0 && y + i < rows && potentialLeftUpInRow < 4; i++) {
+                            if (board[x - i][y + i] == oppositePlayer(down)) {break;}
+                            potentialLeftUpInRow++;
+                        }
                     }
                     //up right
                     if (rightUp != 0) {
-                        for (int i = 1; x + i < columns && y + i < rows && i <= 3; i++) {
+                        int i;
+                        for (i = 1; x + i < columns && y + i < rows && i <= 3; i++) {
                             if (board[x + i][y + i] != rightDown) {
                                 break;
                             }
                             rightDownInRow++;
                         }
+                        potentialRightUpInRow += rightUpInRow;
+                        for (; x + i < columns && y + i < rows && potentialRightUpInRow < 4; i++) {
+                            if (board[x + i][y + i] == oppositePlayer(down)) {break;}
+                            potentialRightUpInRow++;
+                        }
                     }
                     //utility
-                    somethingInRow(leftUp, rightDown, leftUpInRow, rightDownInRow, player);
-                    somethingInRow(leftDown, rightUp, leftDownInRow, rightUpInRow, player);
+                    somethingInRow(leftUp, rightDown, leftUpInRow, rightDownInRow, potentialLeftUpInRow, potentialRightDownInRow, player);
+                    somethingInRow(leftDown, rightUp, leftDownInRow, rightUpInRow, potentialLeftDownInRow, potentialRightUpInRow, player);
                 }
                 //</editor-fold>
                 if (iWin) {utility += 10;} else if (iPair) {utility += 1;}
@@ -152,22 +201,41 @@ public class BetterHeuristic implements IHeuristic {
         return (iWin == true && uWin == true);
     }
 
-    private void somethingInRow(int a, int b, int aInRow, int bInRow, int player){
+    private int oppositePlayer(int player){
+        return ((player==1)?2:1);
+    }
+    private void somethingInRow(int a, int b, int aInRow, int bInRow, int potAInRow, int potBInRow, int player){
         int sign;
         if (a != 0 && a == b) {
-            sign = (a == player) ? 1 : -1;
-            if (aInRow + bInRow >= 3) {whoWins(sign);}
-            else if (aInRow + bInRow >= 2) {whoHasPair(sign);}
-            //utility += (aInRow + bInRow >= 3) ? sign : 0;
+            int pot = potAInRow + potBInRow;
+            if(pot >= 4) {
+                sign = (a == player) ? 1 : -1;
+                if (aInRow + bInRow >= 3) {
+                    whoWins(sign);
+                } else if (aInRow + bInRow >= 2) {
+                    whoHasPair(sign);
+                }
+                //utility += (aInRow + bInRow >= 3) ? sign : 0;
+            }
         } else {
-            sign = (a == player) ? 1 : -1;
-            if (aInRow >= 3) {whoWins(sign);}
-            else if (aInRow >= 2) {whoHasPair(sign);}
-            //utility += (aInRow >= 3) ? sign : 0;
-            sign = (b == player) ? 1 : -1;
-            if (bInRow >= 3) {whoWins(sign);}
-            else if (bInRow >= 2) {whoHasPair(sign);}
-            //utility += (bInRow >= 3) ? sign : 0;
+            if(potAInRow >= 4) {
+                sign = (a == player) ? 1 : -1;
+                if (aInRow >= 3) {
+                    whoWins(sign);
+                } else if (aInRow >= 2) {
+                    whoHasPair(sign);
+                }
+                //utility += (aInRow >= 3) ? sign : 0;
+            }
+            if(potBInRow >= 4) {
+                sign = (b == player) ? 1 : -1;
+                if (bInRow >= 3) {
+                    whoWins(sign);
+                } else if (bInRow >= 2) {
+                    whoHasPair(sign);
+                }
+                //utility += (bInRow >= 3) ? sign : 0;
+            }
         }
     }
 }
