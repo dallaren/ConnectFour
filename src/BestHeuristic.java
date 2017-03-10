@@ -19,169 +19,85 @@ public class BestHeuristic implements IHeuristic {
             for (int y = 0; y < rows ; y++) {
                 iWin = false; uWin = false;
                 iPair = false; uPair = false;
+                int dx, dy;
                 //find the first empty spot in each column
                 if (board[x][y] != 0) continue;
                 //count up how many
+
                 //<editor-fold desc = "first check downwards if possible">
-                int down = 0, downInRow = 0;
-                if (y > 0) {
-                    down = board[x][y - 1];
-                }
-                for (int i = 1; y-i >= 0 && i <= 3; i++) {
-                    if (board[x][y-i] != down) {break;}
-                    downInRow++;
-                }
-                if (down!= 0){
-                    int potentialInRow = 1;
-                    //check if there are enough spaces here to actually win
-                    potentialInRow += downInRow;
-                    int i;
-                    for (i = 1; y+i < rows && potentialInRow < 4; i++) {
-                        if (board[x][y+i] == oppositePlayer(down)) {break;}
-                        potentialInRow++;
+                {
+                    int down = 0;
+                    RowScore downStat;
+                    dx = 0;
+                    dy = -1;
+
+                    if (y > 0) {
+                        down = board[x + dx][y + dy];
                     }
-                    int sign = (down == player) ? 1 : -1;
-                    //utility += (downInRow>=3?sign:0);
-                    if (potentialInRow >=4) {whoWins(sign);}
+                    downStat = getRowScore(columns, rows, board, x, y, dx, dy, down);
+
+                    checkForPoints(down, 0, downStat, new RowScore(), player);
                 }
                 //</editor-fold>
                 //<editor-fold desc= "then check left and right if possible">
                 if (!bothWon()) {
                     int left = 0, right = 0;
-                    int leftInRow = 0, rightInRow = 0;
-                    if (x > 0) {
-                        //first check downwards
-                        left = board[x - 1][y];
-                    }
-                    if (x < columns - 1) {
-                        //first check downwards
-                        right = board[x + 1][y];
-                    }
-                    int potentialLeftInRow = 1;
-                    int potentialRightInRow = 1;
+                    RowScore leftStat, rightStat;
+
                     //check left
-                    if (left != 0) {
-                        int i;
-                        for (i = 1; x - i >= 0 && i <= 3; i++) {
-                            if (board[x - i][y] != left) {
-                                break;
-                            }
-                            leftInRow++;
-                        }
-                        //check how many in a row there potentially could be
-                        potentialLeftInRow += leftInRow;
-                        for (; x - i >= 0 && potentialLeftInRow < 4; i++) {
-                            if (board[x - i][y] == oppositePlayer(down)) {break;}
-                            potentialLeftInRow++;
-                        }
+                    dx = -1;
+                    dy = 0;
+                    if (x > 0) {
+                        left = board[x + dx][y + dy];
                     }
+                    leftStat = getRowScore(columns, rows, board, x, y, dx, dy, left);
+
                     //check right
-                    if (right != 0) {
-                        int i;
-                        for (i = 1; x + i < columns && i <= 3; i++) {
-                            if (board[x + i][y] != left) {
-                                break;
-                            }
-                            rightInRow++;
-                        }
-                        //check how many in a row there potentially could be
-                        potentialRightInRow += rightInRow;
-                        for (; x + i < columns && potentialRightInRow < 4; i++) {
-                            if (board[x + i][y] == oppositePlayer(down)) {break;}
-                            potentialRightInRow++;
-                        }
+                    dx = 1;
+                    dy = 0;
+                    if (x < columns - 1) {
+                        right = board[x + dx][y + dy];
                     }
-                    somethingInRow(left, right, leftInRow, rightInRow, potentialLeftInRow, potentialRightInRow, player);
+                    rightStat = getRowScore(columns, rows, board, x, y, dx, dy, right);
+
+                    checkForPoints(left, right, leftStat, rightStat, player);
                 }
                 //</editor-fold>
                 //<editor-fold desc = "then check diagonally">
                 if(!bothWon()) {
                     int leftUp = 0, rightUp = 0, leftDown = 0, rightDown = 0;
-                    int leftUpInRow = 0, rightUpInRow = 0, leftDownInRow = 0, rightDownInRow = 0;
-                    int potentialLeftUpInRow = 1, potentialRightUpInRow = 1;
-                    int potentialLeftDownInRow = 1, potentialRightDownInRow = 1;
-                    if (x > 0 && y > 0) {
-                        //first check downwards
-                        leftDown = board[x - 1][y - 1];
-                    }
-                    if (x < columns - 1 && y > 0) {
-                        //first check downwards
-                        rightDown = board[x + 1][y - 1];
-                    }
-                    if (x > 0 && y < rows - 1) {
-                        //first check downwards
-                        leftUp = board[x - 1][y + 1];
-                    }
-                    if (x < columns - 1 && y < rows - 1) {
-                        //first check downwards
-                        rightUp = board[x + 1][y + 1];
-                    }
-                    int temp;
+                    RowScore rightUpStat, rightDownStat, leftUpStat, leftDownStat;
                     //down left
-                    if (leftDown != 0) {
-                        int i;
-                        for (i = 1; x - i >= 0 && y - i >= 0 && i <= 3; i++) {
-                            temp = board[x - i][y - i];
-                            if (temp != leftDown) {
-                                break;
-                            }
-                            leftDownInRow++;
-                        }
-                        potentialLeftDownInRow += leftDownInRow;
-                        for (; x - i >= 0 && y - i >= 0 && potentialLeftDownInRow < 4; i++) {
-                            if (board[x - i][y- i] == oppositePlayer(down)) {break;}
-                            potentialLeftDownInRow++;
-                        }
+                    dx = -1;
+                    dy = -1;
+                    if (x > 0 && y > 0) {
+                        leftDown = board[x + dx][y + dy];
                     }
+                    leftDownStat = getRowScore(columns, rows, board, x, y, dx, dy, leftDown);
                     //down right
-                    if (rightDown != 0) {
-                        int i;
-                        for (i = 1; x + i < columns && y - i >= 0 && i <= 3; i++) {
-                            temp = board[x + i][y - i];
-                            if (temp != rightDown) {
-                                break;
-                            }
-                            rightDownInRow++;
-                        }
-                        potentialRightDownInRow += rightDownInRow;
-                        for (; x + i < columns && y - i >= 0 && potentialRightDownInRow < 4; i++) {
-                            if (board[x + i][y - i] == oppositePlayer(down)) {break;}
-                            potentialRightDownInRow++;
-                        }
+                    dx = 1;
+                    dy = -1;
+                    if (x < columns - 1 && y > 0) {
+                        rightDown = board[x + dx][y + dy];
                     }
+                    rightDownStat = getRowScore(columns, rows, board, x, y, dx, dy, rightDown);
                     //up left
-                    if (leftUp != 0) {
-                        int i;
-                        for (i = 1; x - i >= 0 && y + i < rows && i <= 3; i++) {
-                            if (board[x - i][y + i] != leftUp) {
-                                break;
-                            }
-                            leftUpInRow++;
-                        }
-                        potentialLeftUpInRow += leftUpInRow;
-                        for (; x - i >= 0 && y + i < rows && potentialLeftUpInRow < 4; i++) {
-                            if (board[x - i][y + i] == oppositePlayer(down)) {break;}
-                            potentialLeftUpInRow++;
-                        }
+                    dx = -1;
+                    dy = 1;
+                    if (x > 0 && y < rows - 1) {
+                        leftUp = board[x + dx][y + dy];
                     }
+                    leftUpStat = getRowScore(columns, rows, board, x, y, dx, dy, leftUp);
                     //up right
-                    if (rightUp != 0) {
-                        int i;
-                        for (i = 1; x + i < columns && y + i < rows && i <= 3; i++) {
-                            if (board[x + i][y + i] != rightDown) {
-                                break;
-                            }
-                            rightDownInRow++;
-                        }
-                        potentialRightUpInRow += rightUpInRow;
-                        for (; x + i < columns && y + i < rows && potentialRightUpInRow < 4; i++) {
-                            if (board[x + i][y + i] == oppositePlayer(down)) {break;}
-                            potentialRightUpInRow++;
-                        }
+                    dx = 1;
+                    dy = 1;
+                    if (x < columns - 1 && y < rows - 1) {
+                        rightUp = board[x + dx][y + dy];
                     }
+                    rightUpStat = getRowScore(columns, rows, board, x, y, dx, dy, rightUp);
                     //utility
-                    somethingInRow(leftUp, rightDown, leftUpInRow, rightDownInRow, potentialLeftUpInRow, potentialRightDownInRow, player);
-                    somethingInRow(leftDown, rightUp, leftDownInRow, rightUpInRow, potentialLeftDownInRow, potentialRightUpInRow, player);
+                    checkForPoints(leftUp, rightDown, leftUpStat, rightDownStat, player);
+                    checkForPoints(leftDown, rightUp, leftDownStat, rightUpStat, player);
                 }
                 //</editor-fold>
                 if (iWin) {utility += 10;} else if (iPair) {utility += 1;}
@@ -189,6 +105,30 @@ public class BestHeuristic implements IHeuristic {
             }
         }
         return utility;
+    }
+
+    private RowScore getRowScore(int columns, int rows, byte[][] board, int x, int y, int dx, int dy, int current) {
+        int inRow = 0;
+        int potentialInRow = 1;
+        if (current != 0){
+            int i;
+            for (i = 1; (dx == 0 || (x + dx * i >= 0 && x + dx * i < columns)) && (dy == 0 || (y + dy * i >= 0 && y + dy * i < rows)) && i <= 3; i++) {
+                if (board[x + dx * i][y + dy * i] != current) {
+                    break;
+                }
+                inRow++;
+            }
+            //check if there are enough spaces here to actually win
+            potentialInRow += inRow;
+            for (; (dx == 0 || (x + dx * i >= 0 && x + dx * i < columns)) && (dy == 0 || (y + dy * i >= 0 && y + dy * i < rows)) && potentialInRow < 4; i++) {
+                if (board[x + dx * i][y + dy * i] == oppositePlayer(current)) {
+                    break;
+                }
+                potentialInRow++;
+            }
+            return new RowScore(inRow,potentialInRow);
+        }
+        return new RowScore();
     }
 
     private void whoWins(int sign) {
@@ -204,38 +144,40 @@ public class BestHeuristic implements IHeuristic {
     private int oppositePlayer(int player){
         return ((player==1)?2:1);
     }
-    private void somethingInRow(int a, int b, int aInRow, int bInRow, int potAInRow, int potBInRow, int player){
-        int sign;
+    private void checkForPoints(int a, int b, RowScore aStat, RowScore bStat, int player) {
+        int aInRow = aStat.getRowLength();
+        int bInRow = bStat.getRowLength();
+        int potAInRow = aStat.getPotential();
+        int potBInRow = bStat.getPotential();
         if (a != 0 && a == b) {
-            int pot = potAInRow + potBInRow;
-            if(pot >= 4) {
-                sign = (a == player) ? 1 : -1;
-                if (aInRow + bInRow >= 3) {
-                    whoWins(sign);
-                } else if (aInRow + bInRow >= 2) {
-                    whoHasPair(sign);
-                }
-                //utility += (aInRow + bInRow >= 3) ? sign : 0;
-            }
+            givePoints(a, aInRow + bInRow, potAInRow + potBInRow, player);
         } else {
-            if(potAInRow >= 4) {
-                sign = (a == player) ? 1 : -1;
-                if (aInRow >= 3) {
-                    whoWins(sign);
-                } else if (aInRow >= 2) {
-                    whoHasPair(sign);
-                }
-                //utility += (aInRow >= 3) ? sign : 0;
-            }
-            if(potBInRow >= 4) {
-                sign = (b == player) ? 1 : -1;
-                if (bInRow >= 3) {
-                    whoWins(sign);
-                } else if (bInRow >= 2) {
-                    whoHasPair(sign);
-                }
-                //utility += (bInRow >= 3) ? sign : 0;
+            givePoints(a, aInRow, potAInRow, player);
+            givePoints(b, bInRow, potBInRow, player);
+        }
+    }
+
+    private void givePoints(int current, int inRow, int potInRow, int player) {
+        int sign;
+        if(potInRow >= 4) {
+            sign = (current == player) ? 1 : -1;
+            if (inRow >= 3) {
+                whoWins(sign);
+            } else if (inRow >= 2) {
+                whoHasPair(sign);
             }
         }
+    }
+    private class RowScore{
+        int _rowLength = 0;
+        int _potential = 0;
+        public RowScore(){
+        }
+        public RowScore(int rowLength, int potential){
+            _rowLength = rowLength;
+            _potential = potential;
+        }
+        public int getRowLength(){ return _rowLength; }
+        public int getPotential(){ return _potential; }
     }
 }
