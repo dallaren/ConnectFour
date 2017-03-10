@@ -5,16 +5,19 @@ import java.util.Collections;
  * Created by Jonas on 26-Feb-17.
  */
 public class LimitedDepthAB {
-    private static final int INFINITY = Integer.MAX_VALUE;
-    private static final int NEGATIVE_INFINITY = Integer.MIN_VALUE;
-    private static int MAX_DEPTH;
-    private static IHeuristic heuristic;
+    private final int INFINITY = Integer.MAX_VALUE;
+    private final int NEGATIVE_INFINITY = Integer.MIN_VALUE;
+    private int MAX_DEPTH;
+    private IHeuristic heuristic;
 
-    public static int minimaxDecision(State state, int maxDepth){
+    public LimitedDepthAB(IHeuristic heuristic, int maxDepth) {
+        this.heuristic = heuristic;
+        this.MAX_DEPTH = maxDepth;
+    }
+
+    public int minimaxDecision(State state){
         int action = 0;
         int value = NEGATIVE_INFINITY;
-        MAX_DEPTH = maxDepth;
-        heuristic = new BestHeuristic();
 
         for (int a: actions(state)){
             int tempValue = minValue(result(state, a), NEGATIVE_INFINITY, INFINITY, 1);
@@ -26,7 +29,7 @@ public class LimitedDepthAB {
         return action;
     }
 
-    private static int maxValue(State state, int alpha, int beta, int depth){
+    private int maxValue(State state, int alpha, int beta, int depth){
         int winner = state.checkWin();
         if (winner > -1){
             return utility(state, winner, depth);
@@ -45,7 +48,7 @@ public class LimitedDepthAB {
         return value;
     }
 
-    private static int minValue(State state, int alpha, int beta, int depth){
+    private int minValue(State state, int alpha, int beta, int depth){
         int winner = state.checkWin();
         if (winner > -1){
             return utility(state, winner, depth);
@@ -65,7 +68,7 @@ public class LimitedDepthAB {
     }
 
     //return a set of legal actions
-    private static Iterable<Integer> actions(State state) {
+    private Iterable<Integer> actions(State state) {
         int columns = state.getColumns();
         int rows = state.getRows();
         byte[][] gameBoard = state.getGameBoard();
@@ -90,14 +93,14 @@ public class LimitedDepthAB {
     }
 
     //return a new state object where a token has been played into the given column of the given state
-    private static State result(State state, int column) {
+    private State result(State state, int column) {
         int player = state.getPlayer();
         State resultState = new State(state);
         resultState.insertCoin(column, player);
         return resultState;
     }
 
-    private static int utility(State state, int winner, int depth) {
+    private int utility(State state, int winner, int depth) {
         int playerId = state.getPlayerId();
         int utility;
 
