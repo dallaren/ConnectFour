@@ -1,9 +1,9 @@
 
-public class LogicMcLogicFace implements IGameLogic {
+public class LogicMcLogicface implements IGameLogic {
     private State state;
     private final int MAX_DEPTH = 11;
     
-    public LogicMcLogicFace() {
+    public LogicMcLogicface() {
 
     }
 	
