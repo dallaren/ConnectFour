@@ -108,9 +108,9 @@ public class ShowGame
             System.err.println(errMsg);
         }
         System.err.println("Usage: java ShowGame GameLogic1 GameLogic2 [cols rows]");
-        System.err.println("LogicMcLogicFace{1,2} may be:");
+        System.err.println("LogicMcLogicface{1,2} may be:");
         System.err.println("\t" + HUMAN_CMD  + "\t\t - Indicates a human will be playing.");
-        System.err.println("\tLogicMcLogicFace\t - Specifies a LogicMcLogicFace class extending IGameLogic to use as a competitor.");
+        System.err.println("\tLogicMcLogicface\t - Specifies a LogicMcLogicface class extending IGameLogic to use as a competitor.");
         System.err.println("\tcols/rows\t - Must be integers greater than 0 and default to 7 and 6 respectively.");
     }
 
